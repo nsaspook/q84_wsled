@@ -47,12 +47,9 @@
 */
 
 #include "pin_manager.h"
-#include "interrupt_manager.h"
 
 
 
-
-void (*IOCCF5_InterruptHandler)(void);
 
 
 void PIN_MANAGER_Initialize(void)
@@ -61,26 +58,26 @@ void PIN_MANAGER_Initialize(void)
     LATx registers
     */
     LATE = 0x00;
-    LATD = 0x00;
+    LATD = 0x08;
     LATA = 0x00;
-    LATB = 0x00;
+    LATB = 0x04;
     LATC = 0x00;
 
     /**
     TRISx registers
     */
     TRISE = 0x07;
-    TRISA = 0xEF;
-    TRISB = 0xF5;
-    TRISC = 0xAE;
-    TRISD = 0xFC;
+    TRISA = 0xFF;
+    TRISB = 0xF1;
+    TRISC = 0xD6;
+    TRISD = 0xF4;
 
     /**
     ANSELx registers
     */
-    ANSELD = 0xD8;
-    ANSELC = 0x08;
-    ANSELB = 0xFC;
+    ANSELD = 0xD0;
+    ANSELC = 0x02;
+    ANSELB = 0xF0;
     ANSELE = 0x07;
     ANSELA = 0xEA;
 
@@ -121,72 +118,24 @@ void PIN_MANAGER_Initialize(void)
     INLVLE = 0x0F;
 
 
-    /**
-    IOCx registers 
-    */
-    //interrupt on change for group IOCCF - flag
-    IOCCFbits.IOCCF5 = 0;
-    //interrupt on change for group IOCCN - negative
-    IOCCNbits.IOCCN5 = 1;
-    //interrupt on change for group IOCCP - positive
-    IOCCPbits.IOCCP5 = 0;
 
 
 
-    // register default IOC callback functions at runtime; use these methods to register a custom function
-    IOCCF5_SetInterruptHandler(IOCCF5_DefaultInterruptHandler);
    
-    // Enable IOCI interrupt 
-    PIE0bits.IOCIE = 1; 
     
 	
     RC0PPS = 0x19;   //RC0->PWM1_16BIT:PWM12;    
-    SPI1SCKPPS = 0x14;   //RC4->SPI1:SCK1;    
+    SPI1SCKPPS = 0x13;   //RC3->SPI1:SCK1;    
+    RC3PPS = 0x31;   //RC3->SPI1:SCK1;    
     CLCIN0PPS = 0x00;   //RA0->CLC3:CLCIN0;    
-    RC4PPS = 0x31;   //RC4->SPI1:SCK1;    
     RD0PPS = 0x03;   //RD0->CLC3:CLC3;    
     RD1PPS = 0x03;   //RD1->CLC3:CLC3;    
-    RC6PPS = 0x32;   //RC6->SPI1:SDO1;    
-    SPI1SDIPPS = 0x11;   //RC1->SPI1:SDI1;    
+    RC5PPS = 0x32;   //RC5->SPI1:SDO1;    
+    SPI1SDIPPS = 0x14;   //RC4->SPI1:SDI1;    
 }
   
-void __interrupt(irq(IOC),base(8)) PIN_MANAGER_IOC()
+void PIN_MANAGER_IOC(void)
 {   
-	// interrupt on change for pin IOCCF5
-    if(IOCCFbits.IOCCF5 == 1)
-    {
-        IOCCF5_ISR();  
-    }	
-}
-
-/**
-   IOCCF5 Interrupt Service Routine
-*/
-void IOCCF5_ISR(void) {
-
-    // Add custom IOCCF5 code
-
-    // Call the interrupt handler for the callback registered at runtime
-    if(IOCCF5_InterruptHandler)
-    {
-        IOCCF5_InterruptHandler();
-    }
-    IOCCFbits.IOCCF5 = 0;
-}
-
-/**
-  Allows selecting an interrupt handler for IOCCF5 at application runtime
-*/
-void IOCCF5_SetInterruptHandler(void (* InterruptHandler)(void)){
-    IOCCF5_InterruptHandler = InterruptHandler;
-}
-
-/**
-  Default interrupt handler for IOCCF5
-*/
-void IOCCF5_DefaultInterruptHandler(void){
-    // add your IOCCF5 interrupt custom code
-    // or set custom function using IOCCF5_SetInterruptHandler()
 }
 
 /**

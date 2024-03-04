@@ -70,10 +70,6 @@ void  INTERRUPT_Initialize (void)
     GIE = state;
 
     // Assign peripheral interrupt priority vectors
-    IPR3bits.SPI1TXIP = 1;
-    IPR3bits.SPI1IP = 1;
-    IPR3bits.SPI1RXIP = 1;
-    IPR0bits.IOCIP = 1;
     IPR3bits.TMR0IP = 1;
 }
 

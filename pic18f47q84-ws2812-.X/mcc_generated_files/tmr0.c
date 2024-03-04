@@ -134,7 +134,9 @@ void __interrupt(irq(TMR0),base(8)) TMR0_ISR()
     DMAnCON0bits.SIRQEN = 1;
     DMAnSSA += DMAnSSZ;     // move source start addr ahead
     if(DMAnSSA >= (ws2812_seed_addr + WS2812_SEED_SIZE))    // rollover
+    {
         DMAnSSA = ws2812_seed_addr;
+    }
 }
 
 

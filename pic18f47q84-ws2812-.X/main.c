@@ -16,22 +16,24 @@
 bool buttonPressed = false;
 
 /*
-                         Main application
+			 Main application
  */
 void main(void)
 {
-    // Initialize the device
-    SYSTEM_Initialize();
+	// Initialize the device
+	SYSTEM_Initialize();
 
-    // Enable high priority global interrupts
-    INTERRUPT_GlobalInterruptHighEnable();
+	// Enable high priority global interrupts
+	INTERRUPT_GlobalInterruptHighEnable();
 
-    while (1)
-    {        
-        __delay_ms(500);
-        
-    }
+	while (1) {
+		__delay_ms(500);
+		MLED_Toggle();
+		RLED_Toggle();
+		DLED_Toggle();
+
+	}
 }
 /**
  End of File
-*/
+ */
