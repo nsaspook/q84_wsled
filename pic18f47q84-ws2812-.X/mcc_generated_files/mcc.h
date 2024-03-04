@@ -53,8 +53,8 @@
 #include <stdbool.h>
 #include <conio.h>
 #include "interrupt_manager.h"
-#include "dma3.h"
 #include "tmr1.h"
+#include "dma3.h"
 #include "tmr0.h"
 #include "clc3.h"
 #include "clc1.h"
