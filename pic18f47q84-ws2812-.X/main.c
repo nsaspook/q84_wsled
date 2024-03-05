@@ -15,6 +15,8 @@
 
 bool buttonPressed = false;
 
+void ws_led_isr(void);
+
 /*
 			 Main application
  */
@@ -22,6 +24,11 @@ void main(void)
 {
 	// Initialize the device
 	SYSTEM_Initialize();
+
+	/*
+	 * TMR0 DMA trigger isr
+	 */
+	TMR0_SetInterruptHandler(ws_led_isr);
 
 	// Enable high priority global interrupts
 	INTERRUPT_GlobalInterruptHighEnable();
@@ -31,7 +38,20 @@ void main(void)
 		MLED_Toggle();
 		RLED_Toggle();
 		DLED_Toggle();
+	}
+}
 
+void ws_led_isr(void)
+{
+	uint24_t ws2812_seed_addr = (uint24_t) & ws2812_seed;
+
+	// start DMA transfer (transfer GRB data to SPI for WS2812)
+	DMASELECT = 0x02;
+	DMAnCON0bits.SIRQEN = 1;
+	DMAnSSA += DMAnSSZ; // move source start addr ahead
+	if (DMAnSSA >= (ws2812_seed_addr + WS2812_SEED_SIZE)) // rollover
+	{
+		DMAnSSA = ws2812_seed_addr;
 	}
 }
 /**

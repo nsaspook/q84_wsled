@@ -51,10 +51,7 @@
 #include <xc.h>
 #include "tmr0.h"
 #include "interrupt_manager.h"
-#include "pin_manager.h"
-#include "../ws2812_seed.h"
 
-extern const uint8_t ws2812_seed[];
 
 /**
   Section: TMR0 APIs
@@ -69,8 +66,8 @@ void TMR0_Initialize(void)
     // T0CS FOSC/4; T0CKPS 1:8192; T0ASYNC not_synchronised; 
     T0CON1 = 0x5D;
 
-    // TMR0H 97; 
-    TMR0H = 0x61;
+    // TMR0H 99; 
+    TMR0H = 0x63;
 
     // TMR0L 0; 
     TMR0L = 0x00;
@@ -126,17 +123,12 @@ void __interrupt(irq(TMR0),base(8)) TMR0_ISR()
 {
     // clear the TMR0 interrupt flag
     PIR3bits.TMR0IF = 0;
-    
-    uint24_t ws2812_seed_addr = &ws2812_seed;
-
-    // start DMA transfer (transfer GRB data to SPI for WS2812)
-    DMASELECT = 0x02;
-    DMAnCON0bits.SIRQEN = 1;
-    DMAnSSA += DMAnSSZ;     // move source start addr ahead
-    if(DMAnSSA >= (ws2812_seed_addr + WS2812_SEED_SIZE))    // rollover
+    if(TMR0_InterruptHandler)
     {
-        DMAnSSA = ws2812_seed_addr;
+        TMR0_InterruptHandler();
     }
+
+    // add your TMR0 interrupt custom code
 }
 
 
