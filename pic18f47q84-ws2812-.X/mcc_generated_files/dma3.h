@@ -13,13 +13,13 @@
   @Description
     This header file provides APIs for driver for DMA3.
     Generation Information :
-        Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
-        Device            :  PIC18F47Q84
-        Driver Version    :  1.0.0
+	Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
+	Device            :  PIC18F47Q84
+	Driver Version    :  1.0.0
     The generated drivers are tested against the following:
-        Compiler          :  XC8 2.36 and above or later
-        MPLAB             :  MPLAB X 6.00
-*/
+	Compiler          :  XC8 2.36 and above or later
+	MPLAB             :  MPLAB X 6.00
+ */
 
 /*
     (c) 2018 Microchip Technology Inc. and its subsidiaries. 
@@ -42,18 +42,17 @@
     CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
     OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
     SOFTWARE.
-*/
+ */
 
 #ifndef DMA3_H
 #define DMA3_H
 
 /**
   Section: Included Files
-*/
+ */
 #include <stdint.h>
-#include "../ws2812_seed.h"
 
-extern const uint8_t ws2812_seed[];
+uint8_t SrcVarName2[10];
 
 /**
  * @brief Initializes the DMA3 module
@@ -138,7 +137,7 @@ void DMA3_StartTransfer(void);
  * @return None.
  * @param None.
  */
-void DMA3_StartTransferWithTrigger(void);	
+void DMA3_StartTransferWithTrigger(void);
 
 /**
  * @brief Stops all the possible triggers and also clears the GO bit

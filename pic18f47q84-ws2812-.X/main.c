@@ -12,10 +12,10 @@
 #pragma warning disable 2053
 
 #include "mcc_generated_files/mcc.h"
-
-bool buttonPressed = false;
+#include "ws2812_seed.h"
 
 void ws_led_isr(void);
+void ws_led_init(void);
 
 /*
 			 Main application
@@ -29,6 +29,7 @@ void main(void)
 	 * TMR0 DMA trigger isr
 	 */
 	TMR0_SetInterruptHandler(ws_led_isr);
+	ws_led_init();
 
 	// Enable high priority global interrupts
 	INTERRUPT_GlobalInterruptHighEnable();
@@ -37,7 +38,6 @@ void main(void)
 		__delay_ms(500);
 		MLED_Toggle();
 		RLED_Toggle();
-		DLED_Toggle();
 	}
 }
 
@@ -52,7 +52,18 @@ void ws_led_isr(void)
 	if (DMAnSSA >= (ws2812_seed_addr + WS2812_SEED_SIZE)) // rollover
 	{
 		DMAnSSA = ws2812_seed_addr;
+		DLED_Toggle();
 	}
+}
+
+void ws_led_init(void)
+{
+	uint24_t ws2812_seed_addr = (uint24_t) & ws2812_seed;
+
+	// start DMA transfer (transfer GRB data to SPI for WS2812)
+	DMASELECT = 0x02;
+	DMAnSSA = ws2812_seed_addr;
+
 }
 /**
  End of File

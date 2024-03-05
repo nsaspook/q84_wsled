@@ -45,7 +45,7 @@
 #define WS2812_SEED_NUMLED_BYTELEN      WS2812_SEED_NUMLED*3     // =3*NUMLED
 #define WS2812_SEED_NUMPACKETS          WS2812_SEED_NUMLED/ WS2812_SEED_NUMLED_BYTELEN   // =SIZE/BYTELEN
 
-const uint8_t ws2812_seed[WS2812_SEED_SIZE] ={
+volatile uint8_t ws2812_seed[WS2812_SEED_SIZE] = {
 	0, 0, 0,
 	0, 0, 0,
 	0, 0, 0,
@@ -647,7 +647,6 @@ const uint8_t ws2812_seed[WS2812_SEED_SIZE] ={
 	0, 0, 1,
 	0, 0, 1
 };
-
 
 #endif	/* WS2812_SEED_H */
 /**
