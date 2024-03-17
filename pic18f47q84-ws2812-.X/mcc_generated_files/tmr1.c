@@ -70,8 +70,8 @@ void TMR1_Initialize(void)
     //GSS T1G_pin; 
     T1GATE = 0x00;
 
-    //CS FOSC/4; 
-    T1CLK = 0x01;
+    //CS HFINTOSC; 
+    T1CLK = 0x03;
 
     //TMR1H 0; 
     TMR1H = 0x00;

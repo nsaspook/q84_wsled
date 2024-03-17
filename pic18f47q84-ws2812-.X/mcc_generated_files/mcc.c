@@ -56,6 +56,7 @@ void SYSTEM_Initialize(void)
     CLC1_Initialize();
     DMA3_Initialize();
     CLC3_Initialize();
+    CLC2_Initialize();
     TMR1_Initialize();
     TMR0_Initialize();
     SPI1_Initialize();
@@ -65,16 +66,20 @@ void SYSTEM_Initialize(void)
 
 void OSCILLATOR_Initialize(void)
 {
-    // NOSC HFINTOSC; NDIV 1; 
-    OSCCON1 = 0x60;
+    // NOSC EXTOSC   with 4x PLL; NDIV 1; 
+    OSCCON1 = 0x20;
     // CSWHOLD may proceed; SOSCPWR Low power; 
     OSCCON3 = 0x00;
     // MFOEN disabled; LFOEN disabled; ADOEN disabled; PLLEN disabled; SOSCEN disabled; EXTOEN disabled; HFOEN disabled; 
     OSCEN = 0x00;
-    // HFFRQ 64_MHz; 
-    OSCFRQ = 0x08;
+    // HFFRQ 16_MHz; 
+    OSCFRQ = 0x05;
     // TUN 0; 
     OSCTUNE = 0x00;
+    // Wait for PLL to stabilize
+    while(PLLR == 0)
+    {
+    }
 }
 
 void PMD_Initialize(void)

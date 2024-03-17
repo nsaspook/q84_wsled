@@ -185,6 +185,18 @@
 #define RC5_SetAnalogMode()         do { ANSELCbits.ANSELC5 = 1; } while(0)
 #define RC5_SetDigitalMode()        do { ANSELCbits.ANSELC5 = 0; } while(0)
 
+// get/set RC7 procedures
+#define RC7_SetHigh()            do { LATCbits.LATC7 = 1; } while(0)
+#define RC7_SetLow()             do { LATCbits.LATC7 = 0; } while(0)
+#define RC7_Toggle()             do { LATCbits.LATC7 = ~LATCbits.LATC7; } while(0)
+#define RC7_GetValue()              PORTCbits.RC7
+#define RC7_SetDigitalInput()    do { TRISCbits.TRISC7 = 1; } while(0)
+#define RC7_SetDigitalOutput()   do { TRISCbits.TRISC7 = 0; } while(0)
+#define RC7_SetPullup()             do { WPUCbits.WPUC7 = 1; } while(0)
+#define RC7_ResetPullup()           do { WPUCbits.WPUC7 = 0; } while(0)
+#define RC7_SetAnalogMode()         do { ANSELCbits.ANSELC7 = 1; } while(0)
+#define RC7_SetDigitalMode()        do { ANSELCbits.ANSELC7 = 0; } while(0)
+
 // get/set RD0 procedures
 #define RD0_SetHigh()            do { LATDbits.LATD0 = 1; } while(0)
 #define RD0_SetLow()             do { LATDbits.LATD0 = 0; } while(0)

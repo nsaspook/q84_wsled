@@ -57,6 +57,7 @@
 #include "dma3.h"
 #include "tmr0.h"
 #include "clc3.h"
+#include "clc2.h"
 #include "clc1.h"
 #include "spi1.h"
 #include "pwm1_16bit.h"
