@@ -56,6 +56,7 @@
 #include "tmr1.h"
 #include "dma3.h"
 #include "tmr0.h"
+#include "nco1.h"
 #include "clc3.h"
 #include "clc2.h"
 #include "clc1.h"
