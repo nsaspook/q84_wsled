@@ -48,8 +48,10 @@
   Section: Included Files
  */
 
-#define lower_fft	0x0a92 //	40Hz
-#define higher_fft	0x1A6d //	100Hz
+#define LOWER_FFT	0x0a92 //	40Hz
+#define HIGHER_FFT	0x1A6d //	100Hz
+#define FREQ_SHIFT	40	// frequency change steps
+
 #include <xc.h>
 #include "nco1.h"
 #include "interrupt_manager.h"
@@ -87,9 +89,15 @@ void NCO1_Initialize(void)
 	PIE6bits.NCO1IE = 1;
 }
 
+/*
+ * sweep frequency from NCO1 from the lower to upper ranges 
+ * by updating the NCO count registers
+ * it's not a linear sweep because the sweep rate
+ * changes with the frequency (shift variable changes faster)
+ */
 void __interrupt(irq(NCO1), base(8)) NCO1_ISR()
 {
-	static uint16_t fft_value = lower_fft;
+	static uint16_t fft_value = LOWER_FFT;
 	static uint8_t shift = 0;
 
 	// Clear the NCO1 interrupt flag
@@ -99,9 +107,9 @@ void __interrupt(irq(NCO1), base(8)) NCO1_ISR()
 	FFT3_Toggle();
 
 	if (++shift == 0) {
-		fft_value += 40;
-		if (fft_value > higher_fft) {
-			fft_value = lower_fft;
+		fft_value += FREQ_SHIFT;
+		if (fft_value > HIGHER_FFT) {
+			fft_value = LOWER_FFT;
 		}
 		NCO1INCH = (uint8_t) (fft_value >> 8);
 		NCO1INCL = (uint8_t) fft_value;
