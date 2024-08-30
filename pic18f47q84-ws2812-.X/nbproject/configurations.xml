@@ -10,18 +10,9 @@
         <itemPath>mcc_generated_files/device_config.h</itemPath>
         <itemPath>mcc_generated_files/pin_manager.h</itemPath>
         <itemPath>mcc_generated_files/mcc.h</itemPath>
-        <itemPath>mcc_generated_files/clc1.h</itemPath>
-        <itemPath>mcc_generated_files/spi1.h</itemPath>
-        <itemPath>mcc_generated_files/clc3.h</itemPath>
-        <itemPath>mcc_generated_files/pwm1_16bit.h</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
-        <itemPath>mcc_generated_files/tmr1.h</itemPath>
-        <itemPath>mcc_generated_files/dma3.h</itemPath>
-        <itemPath>mcc_generated_files/tmr0.h</itemPath>
-        <itemPath>mcc_generated_files/clc2.h</itemPath>
         <itemPath>mcc_generated_files/nco1.h</itemPath>
       </logicalFolder>
-      <itemPath>ws2812_seed.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -42,15 +33,7 @@
         <itemPath>mcc_generated_files/device_config.c</itemPath>
         <itemPath>mcc_generated_files/mcc.c</itemPath>
         <itemPath>mcc_generated_files/pin_manager.c</itemPath>
-        <itemPath>mcc_generated_files/spi1.c</itemPath>
-        <itemPath>mcc_generated_files/clc1.c</itemPath>
-        <itemPath>mcc_generated_files/clc3.c</itemPath>
-        <itemPath>mcc_generated_files/pwm1_16bit.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
-        <itemPath>mcc_generated_files/tmr1.c</itemPath>
-        <itemPath>mcc_generated_files/dma3.c</itemPath>
-        <itemPath>mcc_generated_files/tmr0.c</itemPath>
-        <itemPath>mcc_generated_files/clc2.c</itemPath>
         <itemPath>mcc_generated_files/nco1.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
@@ -497,7 +480,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>noID</platformTool>
         <languageToolchain>XC8</languageToolchain>
-        <languageToolchainVersion>2.45</languageToolchainVersion>
+        <languageToolchainVersion>2.46</languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
       <packs>

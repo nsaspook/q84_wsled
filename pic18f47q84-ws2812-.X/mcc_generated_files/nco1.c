@@ -13,79 +13,101 @@
    @Description
      This source file provides implementations for driver APIs for NCO1.
      Generation Information :
-         Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
-         Device            :  PIC18F47Q84
-         Driver Version    :  2.11
+	 Product Revision  :  PIC10 / PIC12 / PIC16 / PIC18 MCUs - 1.81.8
+	 Device            :  PIC18F47Q84
+	 Driver Version    :  2.11
      The generated drivers are tested against the following:
-         Compiler          :  XC8 2.36 and above or later
-         MPLAB             :  MPLAB X 6.00
- */ 
-
- /*
-    (c) 2018 Microchip Technology Inc. and its subsidiaries. 
-    
-    Subject to your compliance with these terms, you may use Microchip software and any 
-    derivatives exclusively with Microchip products. It is your responsibility to comply with third party 
-    license terms applicable to your use of third party software (including open source software) that 
-    may accompany Microchip software.
-    
-    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER 
-    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY 
-    IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS 
-    FOR A PARTICULAR PURPOSE.
-    
-    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
-    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
-    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP 
-    HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO 
-    THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL 
-    CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
-    OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
-    SOFTWARE.
-*/
- 
- /**
-   Section: Included Files
+	 Compiler          :  XC8 2.36 and above or later
+	 MPLAB             :  MPLAB X 6.00
  */
 
+/*
+   (c) 2018 Microchip Technology Inc. and its subsidiaries. 
+    
+   Subject to your compliance with these terms, you may use Microchip software and any 
+   derivatives exclusively with Microchip products. It is your responsibility to comply with third party 
+   license terms applicable to your use of third party software (including open source software) that 
+   may accompany Microchip software.
+    
+   THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER 
+   EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY 
+   IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS 
+   FOR A PARTICULAR PURPOSE.
+    
+   IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, 
+   INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND 
+   WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP 
+   HAS BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO 
+   THE FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL 
+   CLAIMS IN ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT 
+   OF FEES, IF ANY, THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS 
+   SOFTWARE.
+ */
+
+/**
+  Section: Included Files
+ */
+
+#define lower_fft	0x0a92 //	40Hz
+#define higher_fft	0x1A6d //	100Hz
 #include <xc.h>
 #include "nco1.h"
+#include "interrupt_manager.h"
 
 /**
   Section: NCO Module APIs
-*/
+ */
 
-void NCO1_Initialize (void)
+void NCO1_Initialize(void)
 {
-    // Set the NCO to the options selected in the GUI
-    // EN disabled; POL active_hi; PFM FDC_mode; 
-    NCO1CON = 0x00;
-    // CKS FOSC; PWS 1_clk; 
-    NCO1CLK = 0x00;
-    // 
-    NCO1ACCU = 0x00;
-    // 
-    NCO1ACCH = 0x00;
-    // 
-    NCO1ACCL = 0x00;
-    // 
-    NCO1INCU = 0x07;
-    // 
-    NCO1INCH = 0xFE;
-    // 
-    NCO1INCL = 0xFA;
+	// Set the NCO to the options selected in the GUI
+	// EN disabled; POL active_hi; PFM FDC_mode; 
+	NCO1CON = 0x00;
+	// CKS LFINTOSC; PWS 1_clk; 
+	NCO1CLK = 0x02;
+	// 
+	NCO1ACCU = 0x00;
+	// 
+	NCO1ACCH = 0x00;
+	// 
+	NCO1ACCL = 0x00;
+	// 
+	NCO1INCU = 0x00;
+	// 
+	NCO1INCH = 0x1A;
+	// 
+	NCO1INCL = 0x6D;
 
-    // Enable the NCO module
-    NCO1CONbits.EN = 1;
-   
+	// Enable the NCO module
+	NCO1CONbits.EN = 1;
+
+	// Clearing IF flag before enabling the interrupt.
+	PIR6bits.NCO1IF = 0;
+	// Enabling NCO1 interrupt.
+	PIE6bits.NCO1IE = 1;
 }
 
-bool NCO1_GetOutputStatus(void)
+void __interrupt(irq(NCO1), base(8)) NCO1_ISR()
 {
-    // Return output status on accumulator over flow
-    return (NCO1CONbits.OUT);
+	static uint16_t fft_value = lower_fft;
+	static uint8_t shift = 0;
+
+	// Clear the NCO1 interrupt flag
+	PIR6bits.NCO1IF = 0;
+	FFT1_Toggle();
+	FFT2_Toggle();
+	FFT3_Toggle();
+
+	if (++shift == 0) {
+		fft_value += 40;
+		if (fft_value > higher_fft) {
+			fft_value = lower_fft;
+		}
+		NCO1INCH = (uint8_t) (fft_value >> 8);
+		NCO1INCL = (uint8_t) fft_value;
+	}
 }
 /**
  End of File
-*/
+ */
 
